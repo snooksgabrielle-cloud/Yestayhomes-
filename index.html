@@ -3,74 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>YESTAY | Your Executive Stay in Athens - Live Proxy & App</title>
-    <meta name="description" content="Find Here the Best Rentals in Athens. YESTAY provides all-inclusive long-term rental solutions to individuals seeking a sophisticated residence in Athens." />
-    <meta property="og:title" content="YESTAY | Your Executive Stay in Athens - Live Proxy & App" />
-    <meta property="og:description" content="Find Here the Best Rentals in Athens. YESTAY provides all-inclusive long-term rental solutions to individuals seeking a sophisticated residence in Athens." />
+    <title>YESTAY | Your Executive Stay in Athens</title>
+    <meta name="description" content="Find the best rentals in Athens. YESTAY provides all-inclusive long-term rental solutions for individuals seeking a sophisticated residence in Athens." />
+
+    <meta property="og:title" content="YESTAY | Your Executive Stay in Athens" />
+    <meta property="og:description" content="Find the best rentals in Athens. YESTAY provides all-inclusive long-term rental solutions for individuals seeking a sophisticated residence in Athens." />
     <meta property="og:type" content="website" />
+
     <meta name="twitter:card" content="summary_large_image" />
-    <script>
-      (function() {
-        var rawStub = {
-          load: function(cpm) {},
-          hasConsented: function() { return true; },
-          openSettings: function() {},
-          closeSettings: function() {},
-          allowAll: function() {},
-          denyAll: function() {},
-          on: function() {},
-          off: function() {},
-          setUserConsent: function() {},
-          getUserConsent: function() { return { necessary: true, analytics: true, functional: true, marketing: true }; },
-          getConsent: function() { return true; },
-          showUI: function() {}
-        };
-        var hubProxy = (typeof Proxy !== 'undefined') ? new Proxy(rawStub, {
-          get: function(target, prop) {
-            if (prop in target) return target[prop];
-            return function() { return true; };
-          }
-        }) : rawStub;
-        function defineSafeHub(propName) {
-          try {
-            Object.defineProperty(window, propName, {
-              get: function() { return hubProxy; },
-              set: function(val) {
-                if (val && typeof val === 'object') {
-                  for (var k in val) { rawStub[k] = val[k]; }
-                  if (typeof rawStub.load !== 'function') { rawStub.load = function() {}; }
-                }
-              },
-              configurable: false,
-              enumerable: true
-            });
-          } catch(e) {
-            window[propName] = hubProxy;
-          }
-        }
-        defineSafeHub('cookiehub');
-        defineSafeHub('__cookiehub');
-        var prevOnError = window.onerror;
-        window.onerror = function(msg, url) {
-          if ((typeof msg === 'string' && /cookiehub/i.test(msg)) || (url && typeof url === 'string' && /cookiehub/i.test(url))) {
-            return true;
-          }
-          if (prevOnError) return prevOnError.apply(this, arguments);
-          return false;
-        };
-        window.addEventListener('error', function(e) {
-          if (e && ((e.message && /cookiehub/i.test(e.message)) || (e.filename && /cookiehub/i.test(e.filename)))) {
-            if (e.preventDefault) e.preventDefault();
-            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-            return true;
-          }
-        }, true);
-      })();
-    </script>
+    <meta name="twitter:title" content="YESTAY | Your Executive Stay in Athens" />
+    <meta name="twitter:description" content="All-inclusive long-term rentals in Athens." />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
