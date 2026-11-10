@@ -42,31 +42,12 @@ export const Navbar: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-4 text-neutral-300">
-            <Link
-              to="/proxy"
-              className="flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 font-semibold px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 transition"
-              title="Interactive Live Proxy Browser"
-            >
-              <Globe className="w-3 h-3" />
-              <span>Live Proxy Suite</span>
-            </Link>
-            <span className="text-neutral-700">|</span>
             <a
               href="tel:+302103486606"
-              className="flex items-center gap-1 text-neutral-300 hover:text-amber-300 transition"
+              className="flex items-center gap-1.5 text-neutral-300 hover:text-amber-300 transition"
             >
-              <Phone className="w-3 h-3 text-amber-400" />
-              <span>{COMPANY_DETAILS.phone}</span>
-            </a>
-            <span className="text-neutral-700">|</span>
-            <a
-              href="/proxy-raw?path=/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-xs text-neutral-400 hover:text-neutral-200 font-medium"
-              title="Open raw stream in new tab"
-            >
-              <span>Raw Stream</span>
+              <Phone className="w-3.5 h-3.5 text-amber-400" />
+              <span className="font-medium">{COMPANY_DETAILS.phone}</span>
             </a>
           </div>
         </div>

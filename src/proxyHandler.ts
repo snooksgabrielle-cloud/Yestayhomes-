@@ -5,19 +5,9 @@ const UPSTREAM_ORIGIN = 'https://yestayhomes.com';
 const USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
-/** Keep app routes in the local SPA; proxy only explicit upstream/proxy endpoints. */
-export function shouldProxyRequest(pathname: string): boolean {
-  return (
-    pathname === '/proxy-raw' ||
-    pathname === '/api/proxy/inspect' ||
-    pathname.startsWith('/sites/') ||
-    pathname.startsWith('/themes/') ||
-    pathname.startsWith('/modules/') ||
-    pathname.startsWith('/core/') ||
-    pathname.startsWith('/cdn-cgi/') ||
-    pathname.toLowerCase().includes('cookiehub') ||
-    pathname.endsWith('1507d1d2.js')
-  );
+/** Proxy 100% of requests directly to the raw upstream stream from yestayhomes.com */
+export function shouldProxyRequest(_pathname: string): boolean {
+  return true;
 }
 
 function sanitizePath(rawPath: string): string {
@@ -166,28 +156,38 @@ export async function handleProxyRequest(
 
     const contentType = upstreamRes.headers.get('content-type') || 'text/html';
 
-    // Forward headers except iframe blockers
+    // Permissive CORS and embedding headers
     const forwardHeaders: Record<string, string> = {
       'access-control-allow-origin': '*',
-      'access-control-allow-methods': 'GET, POST, OPTIONS, HEAD',
+      'access-control-allow-methods': 'GET, POST, OPTIONS, PUT, DELETE, PATCH, HEAD',
+      'access-control-allow-headers': '*',
+      'access-control-expose-headers': '*',
       'content-type': contentType,
     };
 
-    // Strip security headers and caching headers from upstream
+    // Strip security, framing, and restrictive headers from upstream
+    const blockedHeaders = new Set([
+      'x-frame-options',
+      'content-security-policy',
+      'content-security-policy-report-only',
+      'strict-transport-security',
+      'cross-origin-embedder-policy',
+      'cross-origin-opener-policy',
+      'cross-origin-resource-policy',
+      'permissions-policy',
+      'feature-policy',
+      'transfer-encoding',
+      'content-encoding',
+      'content-length',
+      'cache-control',
+      'etag',
+      'last-modified',
+      'expires',
+    ]);
+
     upstreamRes.headers.forEach((value, key) => {
       const lowerKey = key.toLowerCase();
-      if (
-        lowerKey !== 'x-frame-options' &&
-        lowerKey !== 'content-security-policy' &&
-        lowerKey !== 'content-security-policy-report-only' &&
-        lowerKey !== 'transfer-encoding' &&
-        lowerKey !== 'content-encoding' &&
-        lowerKey !== 'content-length' &&
-        lowerKey !== 'cache-control' &&
-        lowerKey !== 'etag' &&
-        lowerKey !== 'last-modified' &&
-        lowerKey !== 'expires'
-      ) {
+      if (!blockedHeaders.has(lowerKey)) {
         forwardHeaders[lowerKey] = value;
       }
     });

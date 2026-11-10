@@ -153,17 +153,6 @@ export const Footer: React.FC = () => {
                   Contact Details
                 </Link>
               </li>
-              <li>
-                <a
-                  href="/proxy-raw?path=/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-amber-400 hover:text-amber-300 transition flex items-center gap-1"
-                >
-                  <span>Live Reverse Proxy</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </li>
             </ul>
           </div>
 

@@ -18,25 +18,12 @@ export default function AreaPage() {
     <main className="flex-1 bg-neutral-950 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
         {/* Breadcrumb */}
-        <div className="flex items-center justify-between text-xs text-neutral-400">
-          <div className="flex items-center gap-2">
-            <Link to="/" className="hover:text-white transition">Home</Link>
-            <span>/</span>
-            <Link to="/rentals" className="hover:text-white transition">Rentals</Link>
-            <span>/</span>
-            <span className="text-amber-400 font-semibold capitalize">{area?.replace(/-/g, ' ')}</span>
-          </div>
-
-          <a
-            href={`/proxy-raw?path=/rent-apartments-athens-${areaKey}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-medium"
-            title="Inspect this district in original upstream proxy"
-          >
-            <span>Open in Proxy</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
+        <div className="flex items-center gap-2 text-xs text-neutral-400">
+          <Link to="/" className="hover:text-white transition">Home</Link>
+          <span>/</span>
+          <Link to="/rentals" className="hover:text-white transition">Rentals</Link>
+          <span>/</span>
+          <span className="text-amber-400 font-semibold capitalize">{area?.replace(/-/g, ' ')}</span>
         </div>
 
         {/* District Hero */}

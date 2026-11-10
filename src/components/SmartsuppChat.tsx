@@ -21,9 +21,11 @@ export const SmartsuppChat: React.FC = () => {
     chatWindow._smartsupp = { ...chatWindow._smartsupp, key };
 
     if (!chatWindow.smartsupp) {
-      const queue = ((...args: unknown[]) => queue._.push(args)) as SmartsuppQueue;
-      queue._ = [];
-      chatWindow.smartsupp = queue;
+      const queueFn = (...args: unknown[]) => {
+        queueFn._.push(args);
+      };
+      queueFn._ = [] as unknown[][];
+      chatWindow.smartsupp = queueFn as unknown as SmartsuppQueue;
     }
 
     if (!document.querySelector('script[data-smartsupp-widget]')) {

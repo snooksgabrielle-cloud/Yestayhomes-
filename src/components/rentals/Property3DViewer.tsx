@@ -375,17 +375,6 @@ export const Property3DViewer: React.FC<Property3DViewerProps> = ({ property }) 
             <Sun className="w-4 h-4 text-amber-400" />
             <span className="capitalize text-[11px] hidden sm:inline">{lightingMode}</span>
           </button>
-
-          <a
-            href={`/proxy-raw?path=${encodeURIComponent(property.path || '/')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-xs text-amber-300 font-semibold border border-neutral-700 flex items-center gap-1.5 transition"
-            title="Inspect original upstream 3D tour in proxy"
-          >
-            <span>Origin 3D Proxy</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
         </div>
       </div>
 

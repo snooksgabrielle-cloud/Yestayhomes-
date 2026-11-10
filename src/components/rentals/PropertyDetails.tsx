@@ -65,17 +65,6 @@ export const PropertyDetails: React.FC<PropertyDetailsProps> = ({ id }) => {
             <span>/</span>
             <span className="text-amber-400 font-medium truncate max-w-[200px]">{property.title}</span>
           </div>
-
-          <a
-            href={`/proxy-raw?path=${encodeURIComponent(property.path || '/')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-medium"
-            title="Inspect in original upstream live proxy"
-          >
-            <span>Inspect in Proxy</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
         </div>
       </div>
 
@@ -141,16 +130,6 @@ export const PropertyDetails: React.FC<PropertyDetailsProps> = ({ id }) => {
               <span>HD Photo Gallery ({property.images.length})</span>
             </button>
           </div>
-
-          <a
-            href={`/proxy-raw?path=${encodeURIComponent(property.path || '/')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-semibold"
-          >
-            <span>Origin Link Proxy 3D View</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
         </div>
 
         {/* Media Section Body */}
