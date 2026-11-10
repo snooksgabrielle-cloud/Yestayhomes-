@@ -1,0 +1,6 @@
+{
+  "name": "YESTAY Homes | Athens Rentals Proxy & App",
+  "description": "High-performance reverse proxy and executive serviced apartment booking platform for YESTAY Homes Athens.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
