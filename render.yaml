@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: yestayhomes
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: VITE_SMARTSUPP_KEY
+        sync: false

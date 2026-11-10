@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, Plugin } from 'vite';
-import { handleProxyRequest } from './src/proxyHandler.ts';
+import { handleProxyRequest, shouldProxyRequest } from './src/proxyHandler.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,7 +13,9 @@ function yestayProxyPlugin(): Plugin {
     name: 'yestay-proxy-plugin',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        handleProxyRequest(req, res, next);
+        const pathname = new URL(req.url || '/', 'http://localhost').pathname;
+        if (!shouldProxyRequest(pathname)) return next();
+        void handleProxyRequest(req, res, next);
       });
     },
   };

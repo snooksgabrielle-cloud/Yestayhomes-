@@ -5,6 +5,21 @@ const UPSTREAM_ORIGIN = 'https://yestayhomes.com';
 const USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
+/** Keep app routes in the local SPA; proxy only explicit upstream/proxy endpoints. */
+export function shouldProxyRequest(pathname: string): boolean {
+  return (
+    pathname === '/proxy-raw' ||
+    pathname === '/api/proxy/inspect' ||
+    pathname.startsWith('/sites/') ||
+    pathname.startsWith('/themes/') ||
+    pathname.startsWith('/modules/') ||
+    pathname.startsWith('/core/') ||
+    pathname.startsWith('/cdn-cgi/') ||
+    pathname.toLowerCase().includes('cookiehub') ||
+    pathname.endsWith('1507d1d2.js')
+  );
+}
+
 function sanitizePath(rawPath: string): string {
   let p = rawPath.trim();
   if (!p.startsWith('/')) p = '/' + p;
@@ -31,7 +46,7 @@ export async function handleProxyRequest(
   }
 
   // Intercept any local cookiehub asset requests with safe stub
-  if (pathname.includes('cookiehub') || pathname.endsWith('1507d1d2.js')) {
+  if (pathname.toLowerCase().includes('cookiehub') || pathname.endsWith('1507d1d2.js')) {
     res.writeHead(200, {
       'content-type': 'application/javascript; charset=utf-8',
       'access-control-allow-origin': '*',
