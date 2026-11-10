@@ -33,14 +33,20 @@ export async function handleProxyRequest(
     return next();
   }
 
-  // Intercept any local cookiehub asset requests with safe stub
-  if (pathname.toLowerCase().includes('cookiehub') || pathname.endsWith('1507d1d2.js')) {
+  // Intercept any local cookiehub or cloudflare challenge asset requests with safe stub
+  if (
+    pathname.toLowerCase().includes('cookiehub') ||
+    pathname.endsWith('1507d1d2.js') ||
+    pathname.includes('challenge-platform') ||
+    pathname.includes('turnstile') ||
+    pathname.includes('cf-browser-verification')
+  ) {
     res.writeHead(200, {
       'content-type': 'application/javascript; charset=utf-8',
       'access-control-allow-origin': '*',
       'cache-control': 'public, max-age=86400',
     });
-    res.end('window.cookiehub={load:function(){},hasConsented:function(){return true;}};');
+    res.end('window.cookiehub={load:function(){},hasConsented:function(){return true;}};window.__CF$cv$params={};');
     return;
   }
 
@@ -200,13 +206,14 @@ export async function handleProxyRequest(
 
       let html = await upstreamRes.text();
 
-      // Fix Cloudflare challenge iframe parent access
-      html = html.replace(/window\.parent\.location/g, 'window.location');
-
       // 1. Specifically target CookieHub script block and inline loaders
       html = html.replace(/<script[^>]*src=["'][^"']*cookiehub[^"']*["'][^>]*><\/script>/gi, '');
       html = html.replace(/<script[^>]*cdn\.cookiehub\.eu[^>]*>[\s\S]*?<\/script>/gi, '');
       html = html.replace(/<script[^>]*>(?:(?!<\/script>)[\s\S])*?cookiehub(?:(?!<\/script>)[\s\S])*?<\/script>/gi, '');
+
+      // 2. Strip Cloudflare challenge platform and bot verification scripts
+      html = html.replace(/<script[^>]*src=["'][^"']*(?:challenge-platform|turnstile)[^"']*["'][^>]*><\/script>/gi, '');
+      html = html.replace(/<script[^>]*>(?:(?!<\/script>)[\s\S])*?(?:challenge-platform|__CF\$cv\$params|cf-browser-verification)(?:(?!<\/script>)[\s\S])*?<\/script>/gi, '');
 
       // 3. Unescape double-escaped HTML entities inside inline <script> blocks that cause JS SyntaxErrors
       html = html.replace(/<script([^>]*)>([\s\S]*?)<\/script>/gi, (match, attrs, content) => {
@@ -230,10 +237,19 @@ export async function handleProxyRequest(
       html = html.replace(/https:\/\/yestayhomes\.com\//g, '/');
       html = html.replace(/https:\/\/yestayhomes\.com/g, '/');
 
-      // Head Polyfill: Guarantee window.cookiehub can never be undefined or deleted
+      // Head Polyfill: Guarantee window.cookiehub & Cloudflare challenge stubs exist
       const headPolyfillScript = `
+<style>
+  #challenge-error-title, #challenge-stage, .cf-turnstile, [id*="cf-challenge"], [class*="cf-challenge"], iframe[src*="challenge-platform"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+</style>
 <script>
   (function() {
+    window.__CF$cv$params = window.__CF$cv$params || {};
     var rawStub = {
       load: function(cpm) {},
       hasConsented: function() { return true; },
@@ -279,7 +295,7 @@ export async function handleProxyRequest(
 
     var prevOnError = window.onerror;
     window.onerror = function(msg, url) {
-      if ((typeof msg === 'string' && /cookiehub/i.test(msg)) || (url && typeof url === 'string' && /cookiehub/i.test(url))) {
+      if ((typeof msg === 'string' && (msg.indexOf('cookiehub') !== -1 || msg.indexOf('challenge') !== -1)) || (url && typeof url === 'string' && (url.indexOf('cookiehub') !== -1 || url.indexOf('challenge') !== -1))) {
         return true;
       }
       if (prevOnError) return prevOnError.apply(this, arguments);
@@ -287,7 +303,7 @@ export async function handleProxyRequest(
     };
 
     window.addEventListener('error', function(e) {
-      if (e && ((e.message && /cookiehub/i.test(e.message)) || (e.filename && /cookiehub/i.test(e.filename)))) {
+      if (e && ((e.message && (e.message.indexOf('cookiehub') !== -1 || e.message.indexOf('challenge') !== -1)) || (e.filename && (e.filename.indexOf('cookiehub') !== -1 || e.filename.indexOf('challenge') !== -1)))) {
         if (e.preventDefault) e.preventDefault();
         if (e.stopImmediatePropagation) e.stopImmediatePropagation();
         return true;
