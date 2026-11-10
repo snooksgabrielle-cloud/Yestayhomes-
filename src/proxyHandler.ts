@@ -38,9 +38,7 @@ export async function handleProxyRequest(
   if (
     pathname.startsWith('/@') ||
     pathname.startsWith('/node_modules/') ||
-    pathname === '/favicon.ico' ||
-    urlObj.searchParams.get('mode') === 'react' ||
-    pathname.startsWith('/react-app')
+    pathname === '/favicon.ico'
   ) {
     return next();
   }
